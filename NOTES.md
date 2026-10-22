@@ -1,0 +1,13 @@
+# Kapso friction log
+
+What I actually hit while building this on Kapso (sandbox number, webhooks, send API).
+Each row is something I observed myself. Where the root cause was my own setup, I say so.
+
+| What I tried | What happened | What I'd improve |
+| --- | --- | --- |
+| Reading the incoming message text from the webhook payload | The text is at `message.text.body` (also mirrored in `message.kapso.content`). I first assumed a flat `message.content`, so my first parser would have missed it. I only found the real shape by logging the raw payload (`LOG_PAYLOADS=1`). | A sample `whatsapp.message.received` payload on the webhook page (or a "send test event" button) so the field names are visible before writing any code. |
+| Matching the sender against my allow-list | The UI shows the contact as `+9230....`, but the webhook sends `from` as `9230....` (no `+`). A naive string compare against the number I typed in `.env` fails and the bot silently ignores me. I now normalise both sides to digits only. | Document the exact phone format in the payload reference, or send a consistent E.164 value everywhere. |
+| Getting the first message through the sandbox | Messages only started flowing after I sent the sandbox activation code from my phone to the sandbox number. Until then there was nothing in the inbox and no webhook delivery, and nothing told me why. | Show "sandbox not activated yet" next to the webhook, and surface the activation code and number on the same page as webhook setup. |
+| Debugging a webhook that was not reaching my server | The webhook page showed only `Last delivery: failed`. The real cause was my tunnel dropping connections (`context canceled` in cloudflared on a mobile hotspot), but from Kapso's side I could not see a status code, an error or a response body. I had to find it in the tunnel logs. | Per-delivery log with HTTP status, response time and error, plus a "redeliver" button for failed events. |
+| Verifying the webhook signature | I got `invalid signature` many times. The cause was my own config: an empty `WEBHOOK_SECRET` in `.env`, and later inline `# comments` on the same line being loaded as part of the secret by my PowerShell launcher. My code verifies the HMAC of the raw request body and was correct. | Not Kapso's fault, but a "send a signed test event" button would have let me prove the signature code was fine in a minute instead of an hour. |
+| Keeping the webhook pointed at my local server | Every time my tunnel restarted, the URL changed and I had to edit the webhook URL in the dashboard again before anything worked. | Out of scope for Kapso itself, but a short "local development" section in the docs recommending a stable tunnel domain would save this step. |
