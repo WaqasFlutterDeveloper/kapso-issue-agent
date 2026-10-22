@@ -26,7 +26,6 @@ You:  YES
 
 Bot:  Issue ban gaya: https://github.com/<you>/<repo>/issues/2
 ```
-![WhatsApp note to GitHub issue](docs/demo.png)
 
 Also understood: `NO` / `cancel` to drop the draft, `help` for usage. Notes can be written in any language the LLM understands.
 
