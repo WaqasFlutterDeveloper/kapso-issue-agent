@@ -26,8 +26,25 @@ You:  YES
 
 Bot:  Issue ban gaya: https://github.com/<you>/<repo>/issues/2
 ```
+![WhatsApp note to GitHub issue](docs/demo.png)
 
 Also understood: `NO` / `cancel` to drop the draft, `help` for usage. Notes can be written in any language the LLM understands.
+
+## Demo
+
+The bot never acts without your confirmation. The flow, in three screenshots:
+
+**1. WhatsApp: send a rough note, get a draft, reply YES**
+
+![WhatsApp conversation](docs/1-user-side.png)
+
+**2. Kapso inbox: the same conversation on the Kapso side**
+
+![Kapso inbox](docs/2-kapso-side.png)
+
+**3. GitHub: the issue created after YES**
+
+![GitHub issue](docs/3-github.png)
 
 ## How it works
 
